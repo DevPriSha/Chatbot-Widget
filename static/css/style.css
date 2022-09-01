@@ -1,6 +1,6 @@
 body {
   font-family: "Open Sans", sans-serif;
-  background: url("../img/body.png") no-repeat center center fixed;
+  /* background: url("../img/body.png") no-repeat center center fixed; */
   background-size: cover;
 }
 
@@ -175,6 +175,20 @@ blockquote {
 }
 
 #sendButton {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  float: right;
+  margin-right: 30px;
+  text-align: center;
+  padding: 5px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #060dcfc7;
+}
+
+#MicButton {
   height: 20px;
   width: 20px;
   border-radius: 50%;

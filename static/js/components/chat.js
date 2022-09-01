@@ -1,6 +1,7 @@
 /**
  * scroll to the bottom of the chats after new message has been added to chat
  */
+speak("");
 const converter = new showdown.Converter();
 function scrollToBottomOfResults() {
     const terminalResultsDiv = document.getElementById("chats");
@@ -30,6 +31,8 @@ function setUserResponse(message) {
  */
 function getBotResponse(text) {
     botResponse = `<img class="botAvatar" src="./static/img/sara_avatar.png"/><span class="botMsg">${text}</span><div class="clearfix"></div>`;
+    //speak text
+    speak(text);
     return botResponse;
 }
 
@@ -416,3 +419,72 @@ $("#sendButton").on("click", (e) => {
     e.preventDefault();
     return false;
 });
+
+let speechRecognition = new window.webkitSpeechRecognition();
+  speechRecognition.continuous = false;
+  speechRecognition.interimResults = false;
+  speechRecognition.lang = "en-IN"
+  speechRecognition.onstart = () => {
+    //change mic icon
+  };
+  speechRecognition.onend = () => {
+    //change mic icon back
+  };
+
+// destroy the existing chart
+if (typeof chatChart !== "undefined") {
+    chatChart.destroy();
+}
+
+$(".chart-container").remove();
+if (typeof modalChart !== "undefined") {
+    modalChart.destroy();
+}
+
+$(".suggestions").remove();
+$("#paginated_cards").remove();
+$(".quickReplies").remove();
+$(".usrInput").blur();
+$(".dropDownMsg").remove();
+
+
+  let final_transcript = "";
+
+  speechRecognition.onresult = (event) => {
+    // Loop through the results from the speech recognition object.
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript;
+        console.log(final_transcript);
+        setUserResponse(final_transcript);
+        send(final_transcript);
+      }
+    }
+    };
+
+$("#MicButton").on("click", (e) => {
+    speechRecognition.start();
+});
+
+function speak(message)
+{
+    message_stripped = message.replace(/<\/?[^>]+(>|$)/g, "");
+
+	var msg = new SpeechSynthesisUtterance();
+
+	// These lines list all of the voices which can be used in speechSynthesis
+	var voices = speechSynthesis.getVoices();
+	//console.log(voices);
+	
+	
+	msg.default = false;
+    msg.voiceURI = "Veena";
+	msg.voice = voices[40];
+	msg.localService = true;
+  	msg.text = message_stripped;
+  	msg.lang = "en-IN";
+	msg.rate = .9;
+	msg.volume = 100;
+  	window.speechSynthesis.speak(msg);
+
+}
